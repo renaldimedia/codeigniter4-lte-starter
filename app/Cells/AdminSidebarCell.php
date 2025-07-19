@@ -13,7 +13,8 @@ class AdminSidebarCell extends Cell
     public function mount(): void
     {
         $this->current_path = uri_string();
-        $this->is_active = "install";
+        $user = auth()->user();
+
         $this->menus = [
             [
                 'id' => 'home',
@@ -43,12 +44,28 @@ class AdminSidebarCell extends Cell
                         'child' => []
                     ]
                 ]
+            ],
+            [
+                'id' => 'users',
+                'title' => 'User',
+                'url' => '/admin/user',
+                'hide' => !$user->inGroup('admin', 'superadmin'),
+                'icon_class' => 'bi bi-speedometer',
+                'child' => [
+                    [
+                        'id' => 'users-create',
+                        'title' => 'Create User',
+                        'url' => '/admin/user/create',
+                        'icon_class' => 'bi bi-speedometer',
+                        'child' => []
+                    ]
+                ]
             ]
         ];
     }
 
     public function render(): string
     {
-        return $this->view('admin_sidebar_cell', ['is_active' => $this->is_active, 'menus' => $this->menus, 'current_path' => $this->current_path]);
+        return $this->view('admin_sidebar_cell', ['menus' => $this->menus, 'current_path' => $this->current_path]);
     }
 }

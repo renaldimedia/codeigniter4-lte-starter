@@ -28,6 +28,9 @@
                  data-accordion="false"
                  id="navigation">
                  <?php foreach ($menus as $menu): ?>
+                     <?php if (array_key_exists('hide', $menu) && $menu['hide'] == true) {
+                            continue;
+                        } ?>
                      <?php if (count($menu['child']) == 0) { ?>
                          <li class="nav-item">
                              <a href="<?= $menu['url'] ?>" class="nav-link <?= str_contains($current_path, $menu['id']) || ($menu['id'] == 'home' && $current_path == "") ? 'active' : '' ?>">
