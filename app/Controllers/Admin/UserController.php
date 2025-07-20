@@ -19,24 +19,57 @@ class UserController extends BaseController
     }
     public function index(): string
     {
-        $data = [
-            'datalist' => $this->user->list([
-                'or' => [
-                    ['field' => 'username', 'op' => '=', 'value' => 'ardir2'],
-                    ['field' => 'username', 'op' => '=', 'value' => 'ardir']
-                ],
-                ['field' => 'full_name', 'op' => 'IS NOT', 'value' => null]
-            ]),
-            'title' => $this->title
-        ];
-        return view('admin/user/list', $data);
+        return view('admin/user/list', ['title' => $this->title]);
     }
+
+    function list()
+    {
+        // Read values
+        $draw = $this->request->getPost('draw');
+        $start = $this->request->getPost('start');
+        $length = $this->request->getPost('length');
+        $searchValue = $this->request->getPost('search')['value'];
+
+        // Sorting
+        $order = $this->request->getPost('order');
+        //  print_r($order);exit;
+        $orderColumnIndex = $order[0]['column'];
+        $orderColumnDir = $order[0]['dir'];
+        $columns = $this->request->getPost('columns');
+        //  print_r($columns);exit;
+        $orderColumn = $columns[$orderColumnIndex]['data'];
+
+
+        $datas = $this->user->list($searchValue, [['field' => $orderColumn, 'dir' => $orderColumnDir]], $length, $start);
+
+
+
+        $response = [
+            "draw" => intval($draw),
+            "recordsTotal" => $datas['total'],
+            "recordsFiltered" => $datas['totalF'],
+            "data" => $datas['data']
+        ];
+
+        return $this->response->setJSON($response);
+    }
+
 
     function form($id = null)
     {
         $data = [
-            'title' => $this->title
+            'title' => $this->title,
+            'method' => 'post',
+            'action' => '/admin/user'
         ];
+
+        if ($id != null) {
+            $user = $this->user->detail($id);
+            $data['formedit'] = $user;
+            $data['method'] = 'put';
+            $data['action'] = '/admin/user/update/' . $id;
+        }
+
         return view('admin/user/form', $data);
     }
 
@@ -87,5 +120,57 @@ class UserController extends BaseController
         } else {
             return redirect()->to('/admin/user')->with('message', 'Gagal menambahkan data!');
         }
+    }
+
+    function update($id)
+    {
+        $rawdata = $this->request->getPost();
+        $rules = [
+            'full_name' => 'required|max_length[100]|min_length[3]',
+            'email' => 'required|max_length[255]|valid_email',
+            'username' => 'required|max_length[255]|min_length[5]',
+            'phone' => 'required|max_length[20]|min_length[8]'
+        ];
+
+        if(!empty($rawdata['password'])){
+            $rules['password'] = 'required|min_length[8]';
+        }
+        if (! $this->validateData($rawdata, $rules)) {
+            // The validation failed.
+            return view('admin/user/form', [
+                'errors' => $this->validator->getErrors(),
+                'formedit' => $rawdata,
+                'method' => 'put',
+                'action' => '/admin/user/update/' . $id
+            ]);
+        }
+        
+        $valid_data = $this->validator->getValidated();
+
+        $users = auth()->getProvider();
+        $user = (new UserModel())->find($id);
+        $user->fill($valid_data);
+
+        if($users->save($user)){
+            return redirect()->to('/admin/user')->with('message', 'Berhasil mengubah data!');
+        } else {
+            return view('admin/user/form', [
+                'errors' => $this->validator->getErrors(),
+                'formedit' => $rawdata,
+                'method' => 'put',
+                'action' => '/admin/user/update/' . $id
+            ]);
+        }
+    }
+
+    function delete($id) {
+        $users = auth()->getProvider();
+        // $user = (new UserModel())->find($id);
+        $users->delete($id, true);
+
+        return $this->response->setJson([
+            'message' => 'Berhasil menghapus data!',
+            'status' => 'success'
+        ]);
     }
 }

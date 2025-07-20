@@ -24,7 +24,7 @@
     <!--begin::Accessibility Features-->
     <!-- Skip links will be dynamically added by accessibility.js -->
     <meta name="supported-color-schemes" content="light dark" />
-    <link rel="preload" href="<?= ASSETS_ADMIN ?>css/adminlte.css" as="style" />
+    <link rel="preload" href="<?= ASSETS_ADMIN ?>/css/adminlte.css" as="style" />
     <!--end::Accessibility Features-->
     <!--begin::Fonts-->
     <link
@@ -50,22 +50,14 @@
     <!--begin::Required Plugin(AdminLTE)-->
     <link rel="stylesheet" href="<?= ASSETS_ADMIN_CSS ?>/adminlte.css" />
     <!--end::Required Plugin(AdminLTE)-->
-    <!-- apexcharts -->
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
-        integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0="
-        crossorigin="anonymous" />
-    <!-- jsvectormap -->
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
-        integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4="
-        crossorigin="anonymous" />
 
-    <link rel="stylesheet" href="<?= base_url('/plugins/sweetalert2/sweetalert2.min.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') ?>">
-    <script src="<?= base_url('/plugins/sweetalert2/sweetalert2.all.min.js') ?>"></script>
+
+    <link href="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.22.2/dist/sweetalert2.min.css
+" rel="stylesheet">
+    <script src="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.22.2/dist/sweetalert2.all.min.js
+"></script>
 
     <script>
         const Toast = Swal.mixin({
@@ -78,6 +70,18 @@
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
             }
+        });
+
+        const loadingAlert = Swal.mixin({
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+            icon: 'info',
+            title: 'Loading...',
+            text: 'Sedang memproses, mohon tunggu',
         });
     </script>
 
@@ -168,6 +172,16 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
     <?= $this->renderSection('body_end') ?>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function() {
+                    loadingAlert.fire();
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

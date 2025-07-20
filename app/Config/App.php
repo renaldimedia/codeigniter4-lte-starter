@@ -159,6 +159,9 @@ class App extends BaseConfig
      */
     public bool $forceGlobalSecureRequests = false;
 
+    public bool $spoofRequestMethod = true;
+
+
     /**
      * --------------------------------------------------------------------------
      * Reverse Proxy IPs

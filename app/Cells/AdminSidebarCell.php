@@ -48,15 +48,15 @@ class AdminSidebarCell extends Cell
             [
                 'id' => 'users',
                 'title' => 'User',
-                'url' => '/admin/user',
+                'url' => '#',
                 'hide' => !$user->inGroup('admin', 'superadmin'),
-                'icon_class' => 'bi bi-speedometer',
+                'icon_class' => 'bi bi-people',
                 'child' => [
                     [
                         'id' => 'users-create',
                         'title' => 'Create User',
-                        'url' => '/admin/user/create',
-                        'icon_class' => 'bi bi-speedometer',
+                        'url' => '/admin/user/add',
+                        'icon_class' => 'bi bi-person-add',
                         'child' => []
                     ]
                 ]

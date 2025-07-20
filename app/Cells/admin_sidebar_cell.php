@@ -41,7 +41,7 @@
                      <?php } else { ?>
                          <li class="nav-item <?= str_contains($current_path, $menu['id']) ? 'menu-open' : '' ?>">
                              <a href="#" class="nav-link">
-                                 <i class="nav-icon bi bi-speedometer"></i>
+                                 <i class="nav-icon <?= $menu['icon_class'] ?>"></i>
                                  <p>
                                      <p><?= $menu['title'] ?></p>
                                      <i class="nav-arrow bi bi-chevron-right"></i>

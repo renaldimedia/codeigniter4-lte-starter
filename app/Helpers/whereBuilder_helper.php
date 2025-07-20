@@ -2,6 +2,7 @@
 
 function applyWhereConditions($builder, $conditions, $defaultLogic = 'AND')
 {
+    $processed = 0;
     foreach ($conditions as $key => $value) {
         // Numerik → kondisi biasa
         if (is_int($key) && is_array($value) && isset($value['field'])) {
@@ -18,7 +19,7 @@ function applyWhereConditions($builder, $conditions, $defaultLogic = 'AND')
                     $builder->$method("$field IS NOT NULL");
                 }
             } elseif ($op === 'LIKE') {
-                $builder->$method("$field LIKE", $val);
+                $builder->like("$field", $val);
             } else {
                 $builder->$method("$field $op", $val);
             }
