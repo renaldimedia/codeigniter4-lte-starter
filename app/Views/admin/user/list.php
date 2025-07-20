@@ -42,6 +42,7 @@
      let table = new DataTable('#datatable', {
          "processing": true,
          "serverSide": true,
+         "responsive": true,
          "ajax": {
              "url": "<?php echo base_url('admin/user/list/ajax'); ?>",
              "type": "POST"

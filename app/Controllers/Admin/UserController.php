@@ -6,6 +6,7 @@ use App\Controllers\Admin\BaseController;
 use App\Models\UserModel;
 use App\Services\UserService;
 use CodeIgniter\Shield\Entities\User;
+use Config\AuthGroups;
 
 class UserController extends BaseController
 {
@@ -60,7 +61,8 @@ class UserController extends BaseController
         $data = [
             'title' => $this->title,
             'method' => 'post',
-            'action' => '/admin/user'
+            'action' => '/admin/user',
+            'group_lists' => (config(AuthGroups::class))->groups
         ];
 
         if ($id != null) {
@@ -76,12 +78,15 @@ class UserController extends BaseController
     function create()
     {
         $rawdata = $this->request->getPost();
+        // print_r($rawdata);exit;
+        // Array ( [full_name] => [email] => [username] => [phone] => [password] => [confirm_password] => [address] => [groups] => Array ( [0] => admin [1] => developer ) )
         if (! $this->validateData($rawdata, [
             'full_name' => 'required|max_length[100]|min_length[3]',
             'email' => 'required|max_length[255]|valid_email',
             'username' => 'required|max_length[255]|min_length[5]',
             'phone' => 'required|max_length[20]|min_length[8]',
             'password' => 'required|min_length[8]',
+            'address' => 'permit_empty|min_length[1]'
         ])) {
             // The validation failed.
             return view('admin/user/form', [
@@ -112,8 +117,16 @@ class UserController extends BaseController
         // To get the complete user object with ID, we need to get from the database
         $user = $users->findById($insertId);
 
-        // Add to default group
-        $users->addToDefaultGroup($user);
+        
+
+        if($rawdata['groups'] && count($rawdata['groups']) > 0){
+            $user->syncGroups(...$rawdata['groups']);
+        }else{
+            // Add to default group
+            $users->addToDefaultGroup($user);
+        }
+
+        
 
         if ($insertId) {
             return redirect()->to('/admin/user')->with('message', 'Berhasil menambahkan data!');
@@ -150,6 +163,10 @@ class UserController extends BaseController
         $users = auth()->getProvider();
         $user = (new UserModel())->find($id);
         $user->fill($valid_data);
+
+        if($rawdata['groups'] && count($rawdata['groups']) > 0){
+            $user->syncGroups(...$rawdata['groups']);
+        }
 
         if($users->save($user)){
             return redirect()->to('/admin/user')->with('message', 'Berhasil mengubah data!');

@@ -51,6 +51,19 @@
     <link rel="stylesheet" href="<?= ASSETS_ADMIN_CSS ?>/adminlte.css" />
     <!--end::Required Plugin(AdminLTE)-->
 
+    <!-- custom by me -->
+
+    <style>
+        .dt-paging > nav > .pagination{
+            column-gap: 3px;
+        }
+
+        .input-group .select2-container--bootstrap-5{
+            flex-grow: 0!important;
+        }
+    </style>
+
+    <!-- end::custom by me -->
 
     <link href="
 https://cdn.jsdelivr.net/npm/sweetalert2@11.22.2/dist/sweetalert2.min.css
