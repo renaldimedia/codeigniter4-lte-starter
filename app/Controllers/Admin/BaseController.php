@@ -55,4 +55,12 @@ abstract class BaseController extends Controller
 
         // E.g.: $this->session = service('session');
     }
+
+     /**
+     * Temporary message
+     */
+    public function flash($message, $type = 'info') {
+        $this->session->setFlashdata('flash_message', 
+            ["message" => $message, "type" => $type]);        
+    }
 }

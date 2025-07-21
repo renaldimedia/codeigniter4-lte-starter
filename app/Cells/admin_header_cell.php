@@ -23,12 +23,12 @@
                  <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                      <span class="dropdown-item dropdown-header"><?= $notification ? count($notification) : 0 ?> Notifications</span>
                      <div class="dropdown-divider"></div>
-                     <?php foreach($notification as $notif): ?>
-                     <a href="#" class="dropdown-item">
-                         <i class="bi bi-envelope me-2"></i> <?= $notif['title'] ?>
-                         <span class="float-end text-secondary fs-7"><?= $notif['timestamp'] ?></span>
-                     </a>
-                     <div class="dropdown-divider"></div>
+                     <?php foreach ($notification as $notif): ?>
+                         <a href="#" class="dropdown-item">
+                             <i class="bi bi-envelope me-2"></i> <?= $notif['title'] ?>
+                             <span class="float-end text-secondary fs-7"><?= $notif['timestamp'] ?></span>
+                         </a>
+                         <div class="dropdown-divider"></div>
                      <?php endforeach; ?>
                      <a href="#" class="dropdown-item dropdown-footer"> See All Notifications </a>
                  </div>
@@ -45,12 +45,12 @@
              <!--begin::User Menu Dropdown-->
              <li class="nav-item dropdown user-menu">
                  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <?php
+                     <?php
                         $user_avatar = ASSETS_ADMIN . "/assets/img/user2-160x160.jpg";
-                        if($user && $user['avatar'] != ""){
+                        if ($user && $user['avatar'] != "") {
                             $user_avatar = $user['avatar'];
                         }
-                    ?>
+                        ?>
                      <img
                          src="<?= $user_avatar ?>"
                          class="user-image rounded-circle shadow"
@@ -65,7 +65,7 @@
                              class="rounded-circle shadow"
                              alt="User Image" />
                          <p>
-                             <?= $user['name'] ?> - <?= $user['title'] ?>
+                             <?= $user['name'] ?><?= $user['title'] && $user['title'] != "" ? ' - ' . $user['title'] : '' ?>
                              <small>Member since <?= $user['register_at'] ?></small>
                          </p>
                      </li>
@@ -73,7 +73,7 @@
                      <!--begin::Menu Footer-->
                      <li class="user-footer">
                          <a href="#" class="btn btn-default btn-flat">Profile</a>
-                         <a href="#" class="btn btn-default btn-flat float-end">Sign out</a>
+                         <a href="#" onclick="confirmLogout()" class="btn btn-default btn-flat float-end">Sign out</a>
                      </li>
                      <!--end::Menu Footer-->
                  </ul>
@@ -84,3 +84,40 @@
      </div>
      <!--end::Container-->
  </nav>
+
+ <script>
+     const confirmLogout = async () => {
+         Swal.fire({
+             title: "Keluar?",
+             text: "Anda akan keluarkan akun anda, lanjutkan?",
+             showCancelButton: true,
+             confirmButtonText: "Keluar",
+             cancelButtonText: `Batal`,
+             showLoaderOnConfirm: true,
+             allowOutsideClick: () => !Swal.isLoading()
+         }).then(async (result) => {
+             /* Read more about isConfirmed, isDenied below */
+             if (result.isConfirmed) {
+                 try {
+                     const url = "/admin/auth/logout/";
+                     const response = await fetch(url);
+                     const res = await response.json();
+                     Toast.fire({
+                         title: res.message,
+                         icon: res.status == 'success' ? 'success' : 'error'
+                     });
+
+                     if(res.status == 'success'){
+                        window.location.replace("/login");
+                     }
+                 } catch (error) {
+                     Toast.fire({
+                         title: "Gagal mengeluarkan akun anda!",
+                         icon: 'error'
+                     });
+                 }
+
+             }
+         });
+     }
+ </script>

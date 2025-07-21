@@ -21,11 +21,14 @@ class AdminHeaderCell extends Cell
             ]
         ];
 
+        $currentUser = auth()->user();
+        
+
         $this->user = [
-            'name' => 'Jhon Doe',
-            'avatar' => 'https://ui-avatars.com/api/?name=Jhon+Doe',
-            'title' => 'Superadmin',
-            'register_at' => '24 Oktober 2024'
+            'name' => $currentUser->full_name,
+            'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($currentUser->full_name),
+            'title' => '',
+            'register_at' => $currentUser->created_at
         ];
         return $this->view('admin_header_cell', ['notification' => $this->notification, 'user' => $this->user]);
     }

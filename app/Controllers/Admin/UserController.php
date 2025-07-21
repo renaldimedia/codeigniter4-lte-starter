@@ -16,11 +16,25 @@ class UserController extends BaseController
 
     public function __construct()
     {
+        //  $currentUser = auth()->user();
+
+        // print_r($currentUser);exit;
         $this->user = new UserService();
     }
     public function index(): string
     {
         return view('admin/user/list', ['title' => $this->title]);
+    }
+
+    function logout() {
+        auth()->logout();
+
+        session()->setFlashData("message", "Anda sudah keluar");
+
+        return $this->response->setJSON([
+            'message' => 'Berhasil mengeluarkan user',
+            'status' => 'success'
+        ]);
     }
 
     function list()

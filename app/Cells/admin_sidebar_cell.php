@@ -31,9 +31,10 @@
                      <?php if (array_key_exists('hide', $menu) && $menu['hide'] == true) {
                             continue;
                         } ?>
+                        <input type="hidden" value="<?= $current_path ?>">
                      <?php if (count($menu['child']) == 0) { ?>
                          <li class="nav-item">
-                             <a href="<?= $menu['url'] ?>" class="nav-link <?= str_contains($current_path, $menu['id']) || ($menu['id'] == 'home' && $current_path == "") ? 'active' : '' ?>">
+                             <a href="<?= $menu['url'] ?>" data-id="<?= $menu['id'] ?>" class="nav-link <?= str_contains($current_path, $menu['id']) || ($menu['id'] == 'dashboard' && ($current_path == "" || $current_path == 'admin')) ? 'active' : '' ?>">
                                  <i class="nav-icon <?= $menu['icon_class'] ?>"></i>
                                  <p><?= $menu['title'] ?></p>
                              </a>
@@ -50,7 +51,7 @@
                              <ul class="nav nav-treeview">
                                  <?php foreach ($menu['child'] as $submenu): ?>
                                      <li class="nav-item">
-                                         <a href="<?= $submenu['url'] ?>" class="nav-link <?= str_contains($current_path, $submenu['id']) ? 'active' : '' ?>">
+                                         <a href="<?= $submenu['url'] ?>" class="nav-link <?= str_contains($current_path, $submenu['url']) ? 'active' : '' ?>">
                                              <i class="nav-icon <?= $submenu['icon_class'] ?>"></i>
                                              <p><?= $submenu['title'] ?></p>
                                          </a>

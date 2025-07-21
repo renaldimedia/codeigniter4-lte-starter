@@ -86,10 +86,9 @@
          Swal.fire({
              title: "Hapus Data?",
              text: "Anda akan menghapus data ini, lanjutkan?",
-             showDenyButton: true,
              showCancelButton: true,
              confirmButtonText: "Hapus",
-             denyButtonText: `Batal`,
+             cancelButtonText: `Batal`,
              showLoaderOnConfirm: true,
              preConfirm: async (login) => {
                  try {

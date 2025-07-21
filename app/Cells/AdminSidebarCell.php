@@ -12,14 +12,14 @@ class AdminSidebarCell extends Cell
 
     public function mount(): void
     {
-        $this->current_path = uri_string();
+        $this->current_path = "/" . uri_string();
         $user = auth()->user();
 
         $this->menus = [
             [
-                'id' => 'home',
+                'id' => 'dashboard',
                 'title' => 'Dashboard',
-                'url' => '/home',
+                'url' => '/admin',
                 'icon_class' => 'bi bi-speedometer',
                 'child' => []
             ],
@@ -46,14 +46,14 @@ class AdminSidebarCell extends Cell
                 ]
             ],
             [
-                'id' => 'users',
+                'id' => 'user',
                 'title' => 'User',
                 'url' => '#',
-                'hide' => !$user->inGroup('admin', 'superadmin'),
+                'hide' => !$user || !$user->inGroup('admin', 'superadmin') ?? true,
                 'icon_class' => 'bi bi-people',
                 'child' => [
                     [
-                        'id' => 'users-create',
+                        'id' => 'user-create',
                         'title' => 'Create User',
                         'url' => '/admin/user/add',
                         'icon_class' => 'bi bi-person-add',
